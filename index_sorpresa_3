@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sorpresa 3 ✦</title>
+<style>
+  *{box-sizing:border-box}
+  :root{
+    --ink:#f8f1ff; --soft:#d8c8ef; --glass:rgba(23,19,49,.72);
+    --line:rgba(238,222,255,.42); --glow:rgba(242,217,255,.9);
+  }
+  html,body{margin:0;min-height:100%;font-family:Georgia,"Times New Roman",serif;color:var(--ink);background:#090817}
+  body{overflow:hidden}
+  #sky{
+    position:fixed; inset:0; overflow:hidden;
+    background:
+      radial-gradient(circle at 25% 20%, rgba(91,67,134,.26), transparent 30%),
+      radial-gradient(circle at 78% 70%, rgba(91,58,117,.20), transparent 32%),
+      linear-gradient(180deg,#080713 0%,#11102b 55%,#181432 100%);
+  }
+  .dust{position:absolute;border-radius:50%;background:white;opacity:.5;animation:twinkle 3s infinite ease-in-out}
+  @keyframes twinkle{50%{opacity:.15;transform:scale(.65)}}
+  .shooting{
+    position:absolute;width:120px;height:1px;background:linear-gradient(90deg,transparent,#fff);
+    transform:rotate(-28deg);opacity:0;animation:shoot 8s infinite;
+  }
+  @keyframes shoot{
+    0%,76%{opacity:0;transform:translate(-20vw,-15vh) rotate(-28deg)}
+    78%{opacity:.8}
+    84%,100%{opacity:0;transform:translate(115vw,70vh) rotate(-28deg)}
+  }
+  header{
+    position:fixed;top:18px;left:0;right:0;text-align:center;z-index:8;pointer-events:none;
+  }
+  .tag{font:600 12px Arial,sans-serif;letter-spacing:3px;text-transform:uppercase;color:#d7c4ec}
+  h1{font-size:clamp(27px,4vw,44px);font-weight:400;margin:8px 12px 5px}
+  .hint{font:14px Arial,sans-serif;color:#c9bed9;margin:0 15px}
+  #constellation{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  #constellation line{stroke:var(--line);stroke-width:1.2;opacity:0;transition:opacity 1s}
+  #constellation line.on{opacity:1}
+  .star{
+    position:absolute;transform:translate(-50%,-50%);border:0;background:none;color:white;
+    width:54px;height:54px;cursor:pointer;z-index:4;border-radius:50%;
+  }
+  .star::before{
+    content:"✦";font-size:25px;display:block;text-shadow:0 0 8px #fff,0 0 18px #cdb4ef;
+    animation:pulse 2.4s infinite ease-in-out;
+  }
+  .star::after{
+    content:"";position:absolute;inset:9px;border-radius:50%;box-shadow:0 0 25px 8px rgba(210,183,239,.12);
+  }
+  .star:hover{transform:translate(-50%,-50%) scale(1.14)}
+  .star.visited::before{color:#fff7cf;text-shadow:0 0 9px white,0 0 24px #f6dfff,0 0 40px #d8b5ff}
+  .star small{
+    position:absolute;top:48px;left:50%;transform:translateX(-50%);
+    white-space:nowrap;font:12px Arial,sans-serif;color:#d9cee7;opacity:.82;
+  }
+  @keyframes pulse{50%{transform:scale(1.24);opacity:.72}}
+  #finalStar{display:none;width:86px;height:86px}
+  #finalStar::before{font-size:44px;animation:pulse 1.7s infinite}
+  #finalStar small{top:70px}
+  .locked::before{content:"✧";opacity:.35}
+  #modal,#ending{
+    position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px;
+    z-index:20;background:rgba(5,4,15,.46);backdrop-filter:blur(5px);
+  }
+  .card{
+    width:min(560px,94vw);max-height:78vh;overflow:auto;padding:34px 30px 28px;
+    border:1px solid rgba(239,224,255,.22);border-radius:26px;
+    background:linear-gradient(145deg,rgba(31,25,62,.94),rgba(17,15,40,.92));
+    box-shadow:0 24px 80px rgba(0,0,0,.45),0 0 45px rgba(174,139,215,.10);
+    text-align:center;animation:rise .45s ease;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(15px) scale(.98)}}
+  .card .symbol{font-size:34px;margin-bottom:5px}
+  .card h2{font-size:28px;font-weight:400;margin:5px 0 18px}
+  .card p{font-size:17px;line-height:1.75;color:#eee7f7;white-space:pre-line}
+  .close{
+    margin-top:18px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);
+    color:white;border-radius:999px;padding:11px 22px;cursor:pointer;font-size:14px;
+  }
+  #progress{
+    position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:8;
+    font:12px Arial,sans-serif;color:#cfc2df;letter-spacing:1px;background:rgba(11,9,28,.48);
+    padding:8px 13px;border-radius:999px;backdrop-filter:blur(5px);
+  }
+  #ending{background:rgba(5,4,15,.78)}
+  #ending .card{width:min(680px,94vw)}
+  #ending h2{font-size:clamp(30px,5vw,46px)}
+  #signature{opacity:0;transition:opacity 2s;margin-top:24px;font-style:italic;color:#ead9ff}
+  #signature.show{opacity:1}
+  .reveal{font-weight:bold;color:#fff}
+  @media(max-width:600px){
+    header{top:12px}.hint{font-size:12px}.star{width:46px;height:46px}.star::before{font-size:22px}
+    .star small{display:none}.card{padding:28px 22px}.card p{font-size:16px}
+  }
+</style>
+</head>
+<body>
+<div id="sky">
+  <div class="shooting" style="top:8%;left:-10%;animation-delay:1s"></div>
+  <div class="shooting" style="top:20%;left:-20%;animation-delay:5s"></div>
+
+  <header>
+    <div class="tag">✦ Sorpresa 3 ✦</div>
+    <h1>El cielo de Rosario</h1>
+    <p class="hint">Toca cada estrella. Hay una última que solo aparece cuando conoces las demás. ♡</p>
+  </header>
+
+  <svg id="constellation">
+    <line id="l1" x1="18%" y1="34%" x2="38%" y2="24%"/>
+    <line id="l2" x1="38%" y1="24%" x2="69%" y2="31%"/>
+    <line id="l3" x1="69%" y1="31%" x2="78%" y2="57%"/>
+    <line id="l4" x1="78%" y1="57%" x2="56%" y2="73%"/>
+    <line id="l5" x1="56%" y1="73%" x2="28%" y2="67%"/>
+    <line id="l6" x1="28%" y1="67%" x2="18%" y2="34%"/>
+    <line id="lf1" x1="18%" y1="34%" x2="50%" y2="49%"/>
+    <line id="lf2" x1="38%" y1="24%" x2="50%" y2="49%"/>
+    <line id="lf3" x1="69%" y1="31%" x2="50%" y2="49%"/>
+    <line id="lf4" x1="78%" y1="57%" x2="50%" y2="49%"/>
+    <line id="lf5" x1="56%" y1="73%" x2="50%" y2="49%"/>
+    <line id="lf6" x1="28%" y1="67%" x2="50%" y2="49%"/>
+  </svg>
+
+  <button class="star" data-i="0" style="left:18%;top:34%"><small>Cancún</small></button>
+  <button class="star" data-i="1" style="left:38%;top:24%"><small>Nina</small></button>
+  <button class="star" data-i="2" style="left:69%;top:31%"><small>Tu día</small></button>
+  <button class="star" data-i="3" style="left:78%;top:57%"><small>Tu fuerza</small></button>
+  <button class="star" data-i="4" style="left:56%;top:73%"><small>Tus chistes</small></button>
+  <button class="star" data-i="5" style="left:28%;top:67%"><small>Tú</small></button>
+
+  <button class="star" id="finalStar" style="left:50%;top:49%">
+    <small>Mi estrella favorita</small>
+  </button>
+
+  <div id="progress">0 de 6 estrellas descubiertas ✦</div>
+</div>
+
+<div id="modal">
+  <div class="card">
+    <div class="symbol">✦</div>
+    <h2 id="modalTitle"></h2>
+    <p id="modalText"></p>
+    <button class="close" id="closeModal">Seguir mirando el cielo ♡</button>
+  </div>
+</div>
+
+<div id="ending">
+  <div class="card">
+    <div class="symbol">✦</div>
+    <h2>Mi estrella favorita</h2>
+    <p>Hay muchísimas cosas de ti que amo y todavía muchísimas más que me faltan por descubrir.
+
+Y mientras yo también sigo descubriendo quién soy, hay algo que quiero que nunca olvides:
+
+<span class="reveal">amarte nunca ha sido una de mis dudas.</span>
+
+No sé exactamente a dónde me llevará la vida.
+No sé cuánto voy a cambiar ni cuántas versiones de mí todavía me faltan por conocer.
+
+Pero cuando pienso en dónde quiero estar mientras descubro todo eso, pienso en ti.
+
+Quiero más Cancún.
+Más días contigo y Nina.
+Más historias sobre tu día.
+Más chistes malos.
+Más momentos cotidianos.
+Más aventuras.
+Más tú.
+
+<span class="reveal">Feliz cumpleaños, mi amor. ♡</span>
+
+De todos los lugares del universo en los que podría estar,
+mi favorito siempre será aquel en el que pueda estar a tu lado.</p>
+    <div id="signature">Con amor, Leslie ♡</div>
+  </div>
+</div>
+
+<script>
+const memories = [
+  {
+    title:"Una aventura contigo",
+    text:`De todos los lugares a los que podría ir, mis favoritos siempre terminan siendo aquellos en los que estás tú.
+
+Cancún es uno de esos recuerdos que guardo con muchísimo cariño. No solo por el lugar, sino porque estuve ahí contigo.
+
+Quiero que todavía nos queden muchos lugares nuevos por conocer juntas. ♡`
+  },
+  {
+    title:"Mi lugar favorito",
+    text:`Hay algo en estar contigo y con Nina que me hace sentir en casa.
+
+No necesitamos estar haciendo algo extraordinario. A veces, verlas, estar juntas y compartir esos momentos pequeños es suficiente para pensar:
+
+“sí, aquí quiero estar.” ♡`
+  },
+  {
+    title:"Cuéntame tu día",
+    text:`Me encanta cuando me platicas tu día.
+
+Las cosas importantes, los chismes, algo que te hizo enojar, algo que te dio risa y hasta esas pequeñas cosas que quizá para ti no significan demasiado.
+
+Porque nunca se trata solamente de escuchar una historia.
+
+Se trata de conocerte un poquito más cada día. ♡`
+  },
+  {
+    title:"Una de las cosas que más admiro de ti",
+    text:`Me encanta cómo nunca te rindes.
+
+Incluso cuando algo se pone difícil, sigues intentando, buscando otra forma, levantándote una vez más.
+
+Y quizá tú no siempre puedas verlo, pero yo sí.
+
+Y estoy muy orgullosa de ti. ♡`
+  },
+  {
+    title:"Mi sonido favorito",
+    text:`Me gustan tus chistes.
+
+Incluso los malos.
+
+Especialmente los malos. 🤨
+
+Me gusta escucharte reír, hacer tonterías contigo y que podamos encontrar momentos para reírnos incluso en los días más normales.
+
+Nunca dejes de hacerme reír. ♡`
+  },
+  {
+    title:"Simplemente Rosario",
+    text:`Me gusta tu forma de ser.
+
+Y podría intentar dividirla en cientos de razones: cómo hablas, cómo piensas, cómo quieres, cómo te emocionas, cómo cuentas historias, cómo te ríes...
+
+Pero creo que al final la explicación más sencilla es también la más verdadera:
+
+me gustas tú.
+
+No una versión perfecta de ti.
+Tú. ♡`
+  }
+];
+
+const sky=document.getElementById("sky");
+for(let i=0;i<115;i++){
+  const d=document.createElement("span");
+  d.className="dust";
+  const s=(Math.random()*2.2+.5);
+  d.style.width=s+"px"; d.style.height=s+"px";
+  d.style.left=Math.random()*100+"%"; d.style.top=Math.random()*100+"%";
+  d.style.animationDelay=Math.random()*4+"s";
+  d.style.animationDuration=(2+Math.random()*4)+"s";
+  sky.prepend(d);
+}
+
+const stars=[...document.querySelectorAll(".star[data-i]")];
+const visited=new Set();
+const modal=document.getElementById("modal");
+const title=document.getElementById("modalTitle");
+const text=document.getElementById("modalText");
+const progress=document.getElementById("progress");
+const finalStar=document.getElementById("finalStar");
+
+stars.forEach((star)=>{
+  star.addEventListener("click",()=>{
+    const i=Number(star.dataset.i);
+    title.textContent=memories[i].title;
+    text.textContent=memories[i].text;
+    modal.style.display="flex";
+    star.classList.add("visited");
+    visited.add(i);
+    document.getElementById("l"+(i+1)).classList.add("on");
+    progress.textContent=`${visited.size} de 6 estrellas descubiertas ✦`;
+
+    if(visited.size===6){
+      finalStar.style.display="block";
+      setTimeout(()=>{
+        document.querySelectorAll('[id^="lf"]').forEach(l=>l.classList.add("on"));
+        progress.textContent="La última estrella te está esperando ♡";
+      },500);
+    }
+  });
+});
+
+document.getElementById("closeModal").onclick=()=>modal.style.display="none";
+modal.addEventListener("click",e=>{if(e.target===modal) modal.style.display="none"});
+
+finalStar.addEventListener("click",()=>{
+  finalStar.classList.add("visited");
+  document.getElementById("ending").style.display="flex";
+  setTimeout(()=>document.getElementById("signature").classList.add("show"),2200);
+});
+</script>
+</body>
+</html>
